@@ -7,7 +7,9 @@ class Map:
     def __init__(self, MapDimensions: tuple) -> None:
         pygame.init()
         self.pointsCloud = []  # List of points to be displayed on the map
-        self.externalMap = pygame.image.load("map.png")  # Load the reference map image
+        self.externalMap = pygame.image.load(
+            "images/map.png"
+        )  # Load the reference map image
         self.map_h, self.map_w = MapDimensions
         self.winName = "Map"
         self.map = None

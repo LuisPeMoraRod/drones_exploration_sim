@@ -26,20 +26,14 @@ if __name__ == "__main__":
 
     running = True
     while running:
-        sensorOn = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if pygame.mouse.get_focused():
-                sensorOn = True
-            elif not pygame.mouse.get_focused():
-                sensorOn = False
-        if sensorOn:
-            position = pygame.mouse.get_pos()
-            laser.position = position
-            sensorData = laser.sense()
-            map.dataStorage(sensorData)
-            map.showData()
+        position = robot.position
+        laser.position = position
+        sensorData = laser.sense()
+        map.dataStorage(sensorData)
+        map.showData()
 
         map.map.fill(constants.COLORS["BLACK"])
 
