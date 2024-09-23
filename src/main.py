@@ -19,7 +19,7 @@ if __name__ == "__main__":
     map.infoMap = map.map.copy()
 
     # Initalize single robot
-    robot = robot.Robot(map.map, (0, 0))
+    robot = robot.Robot(map.map, map.externalMap, (300, 300))
 
     # Initialize Pygame
     pygame.init()
