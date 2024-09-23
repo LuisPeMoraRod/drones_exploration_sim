@@ -5,11 +5,19 @@
 ```
 python3 -m venv .venv
 ```
-2. Install required dependencies:
+2. Activate the virtual environment:
+```
+source .venv/bin/activate
+```
+3. Install required dependencies:
 ```
 pip install -r requirements.txt
 ```
-3. Run the main script:
+4. Run the main script:
 ```
 python main.py
+```
+5. Deactivate virtual environment:
+```
+deactivate
 ```
