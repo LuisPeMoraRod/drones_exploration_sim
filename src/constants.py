@@ -20,6 +20,10 @@ DIRECTIONS: dict = {
 # Map dimensions
 MAP_DIMENSIONS: tuple = (600, 1200)
 
+# Configuration window dimensions
+CONFIG_W = 500
+CONFIG_H = 200
+
 # Robot dimensions
 ROBOT_DIMENSIONS: tuple = (25, 25)
 SPEED: int = 5
