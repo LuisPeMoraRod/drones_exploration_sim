@@ -22,10 +22,10 @@ MAP_DIMENSIONS: tuple = (600, 1200)
 
 # Configuration window dimensions
 CONFIG_W = 500
-CONFIG_H = 200
+CONFIG_H = 300
 
 # Robot dimensions
-ROBOT_DIMENSIONS: tuple = (25, 25)
+ROBOT_DIMENSIONS: tuple = (21, 21)
 SPEED: int = 5
 
 # Simulation parameters
@@ -34,3 +34,7 @@ UNCERTAINTY = (0.5, 0.01)
 X0 = 0
 Y0 = 0
 ANGULAR_SPEED = 4
+
+# Robot initial position
+INIT_X = 11
+INIT_Y = 11
