@@ -1,0 +1,9 @@
+# This file contains the constant values used in the configuration module
+
+# Configuration window dimensions
+CONFIG_W = 500
+CONFIG_H = 300
+
+# Robot initial position
+INIT_X = 11
+INIT_Y = 11

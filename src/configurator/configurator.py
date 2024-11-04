@@ -117,7 +117,7 @@ class Configurator:
         self.start_button = tk.Button(
             self.root,
             text="Start",
-            command=self.write_agent_info,
+            command=self.close_window,
             state=self.start_button_state,
         )
         self.start_button.grid(row=row_index + 1, column=0, columnspan=3, pady=10)
@@ -167,7 +167,7 @@ class Configurator:
         config_data = {
             "map_file": map_file,
             "agents_initial_pos": [
-                (x_entry.get() or INIT_X, y_entry.get() or INIT_X)
+                (x_entry.get() or INIT_X, y_entry.get() or INIT_Y)
                 for _, _, x_entry, _, y_entry in self.agent_rows
             ],
         }
@@ -186,3 +186,9 @@ class Configurator:
         except (FileNotFoundError, json.JSONDecodeError) as e:
             print(f"Error loading configuration file: {e}")
             return None
+
+    def close_window(self):
+        # Write the agent information to the configuration file
+        self.write_agent_info()
+        # Close the configuration window
+        self.root.destroy()
