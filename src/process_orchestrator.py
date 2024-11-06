@@ -9,6 +9,7 @@ class ProcessOrchestrator:
     def __init__(self):
         # Execute the configuration process
         self.configuration_process()
+        self.execute_web_views()
 
     def configuration_process(self):
         """
@@ -25,4 +26,4 @@ class ProcessOrchestrator:
         This method starts the web view processes.
         """
         # Start the web view process as a separate process
-        print("Starting web view process")
+        subprocess.Popen(["python", "src/webview/main.py"])
