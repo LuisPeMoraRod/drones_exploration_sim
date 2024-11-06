@@ -1,7 +1,16 @@
-from constants import ROBOT_DIMENSIONS, COLORS, SPEED, DIRECTIONS, MAP_DIMENSIONS
+from constants import (
+    ROBOT_DIMENSIONS,
+    COLORS,
+    SPEED,
+    DIRECTIONS,
+    UNCERTAINTY,
+    ANGULAR_SPEED,
+    RANGE,
+)
 import math
 import pygame
 from map import Map
+from sensors import LaserSensor
 
 
 class Robot:
@@ -16,14 +25,28 @@ class Robot:
             environment.mapImage
         )  # contains the map image used as reference for collision detection
         self.map = environment.map  # contains the map surface to draw the robot
+
         self.dimensions = ROBOT_DIMENSIONS
+
         self.position = [
             initialPos[0] + self.dimensions[0] // 2,
             initialPos[1] + self.dimensions[1] // 2,
         ]
+
         self.color = color
         self.direction = DIRECTIONS["RIGHT"]
         self.speed = speed
+
+        # Initialize the laser sensor
+        self.laser = LaserSensor(
+            RANGE,
+            self.map.copy(),
+            UNCERTAINTY,
+            ANGULAR_SPEED,
+            self.position[0],
+            self.position[1],
+            self.direction,
+        )
 
     def draw(self, surface: pygame.Surface):
         """
@@ -44,7 +67,7 @@ class Robot:
         # Get the state of the keys
         keys = pygame.key.get_pressed()
 
-        # Move the square
+        # Move the robot based on the key pressed
         if keys[pygame.K_UP]:
             self.direction = DIRECTIONS["UP"]
             if not self.isWallCollision():
@@ -61,6 +84,9 @@ class Robot:
             self.direction = DIRECTIONS["RIGHT"]
             if not self.isWallCollision():
                 self.moveRight()
+
+        # Update the laser sensor position
+        self.laser.position = self.position
 
     def isWallCollision(self) -> bool:
         """

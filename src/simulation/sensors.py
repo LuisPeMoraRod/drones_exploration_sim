@@ -1,7 +1,7 @@
 import pygame
 import math
 import numpy as np
-from constants import COLORS
+from constants import COLORS, DIRECTIONS
 
 
 class LaserSensor:
@@ -13,6 +13,7 @@ class LaserSensor:
         speed: int,
         x: int,
         y: int,
+        direction: int = DIRECTIONS["RIGHT"],
     ) -> None:
         self.range = range
         self.speed = speed  # rounds per second
@@ -37,9 +38,9 @@ class LaserSensor:
             y2 = y1 - self.range * math.sin(angle)
 
             # simulates laser beam
-            for i in range(0, 100):
+            for i in range(0, self.range):
                 # interpolate between the start and end points of the ray
-                u = i / 100
+                u = i / self.range
                 x = int(x2 * u + x1 * (1 - u))
                 y = int(y2 * u + y1 * (1 - u))
                 if (

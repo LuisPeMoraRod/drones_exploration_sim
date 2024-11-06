@@ -9,7 +9,7 @@ class ProcessOrchestrator:
     def __init__(self):
         # Execute the configuration process
         self.configuration_process()
-        self.execute_web_views()
+        # self.execute_web_views()
         self.execute_simulation()
 
     def configuration_process(self):

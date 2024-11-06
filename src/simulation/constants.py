@@ -11,10 +11,10 @@ COLORS: dict = {
 
 # Directions
 DIRECTIONS: dict = {
-    "UP": 0,
-    "RIGHT": 1,
-    "DOWN": 2,
-    "LEFT": 3,
+    "RIGHT": 0,
+    "UP": 1,
+    "LEFT": 2,
+    "DOWN": 3,
 }
 
 # Map dimensions
@@ -29,7 +29,7 @@ ROBOT_DIMENSIONS: tuple = (21, 21)
 SPEED: int = 5
 
 # Simulation parameters
-RANGE = 100
+RANGE = 500
 UNCERTAINTY = (0.5, 0.01)
 X0 = 0
 Y0 = 0

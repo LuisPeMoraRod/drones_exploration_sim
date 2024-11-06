@@ -11,7 +11,6 @@ class Map:
             "images/map.png"
         )  # Load the reference map image
         self.map_h, self.map_w = MapDimensions
-        self.winName = "Map"
         self.map = None
         self.displayMap()
 
@@ -19,10 +18,10 @@ class Map:
         """
         Display reference map image
         """
-        pygame.display.set_caption(self.winName)
+        pygame.display.set_caption("Simulation map")
         self.map = pygame.display.set_mode((self.map_w, self.map_h))
         self.map.blit(self.mapImage, (0, 0))  # Display the reference map image on top
-        self.infoMap = self.map.copy()
+        self.resultMap = self.map.copy()
 
     def polarToCartesian(self, r: float, theta: float, robotPosition: tuple) -> tuple:
         """
@@ -49,4 +48,4 @@ class Map:
         Display the data on the map.
         """
         for point in self.pointsCloud:
-            self.infoMap.set_at(point, COLORS["RED"])
+            self.resultMap.set_at(point, COLORS["RED"])
