@@ -1,13 +1,14 @@
-import map
+from map import Map
 import pygame
 import constants
 import sensors
 import robot
 
+
 class Simulator:
     def __init__(self):
-        map = map.Map(constants.MAP_DIMENSIONS)
-        originalMap = map.map.copy()
+        environment = Map(constants.MAP_DIMENSIONS)
+        originalMap = environment.map.copy()
         laser = sensors.LaserSensor(
             constants.RANGE,
             originalMap,
@@ -16,11 +17,11 @@ class Simulator:
             constants.X0,
             constants.Y0,
         )
-        map.map.fill(constants.COLORS["BLACK"])
-        map.infoMap = map.map.copy()
+        environment.map.fill(constants.COLORS["BLACK"])
+        environment.infoMap = environment.map.copy()
 
         # Initalize single robot
-        robot = robot.Robot(map.map, map.externalMap, (300, 300))
+        robot = robot.Robot(environment.map, environment.mapImage, (300, 300))
 
         # Initialize Pygame
         pygame.init()
@@ -33,15 +34,15 @@ class Simulator:
             position = robot.position
             laser.position = position
             sensorData = laser.sense()
-            map.dataStorage(sensorData)
-            map.showData()
+            environment.storeData(sensorData)
+            environment.showData()
 
-            map.map.fill(constants.COLORS["BLACK"])
+            environment.map.fill(constants.COLORS["BLACK"])
 
-            map.map.blit(map.infoMap, (0, 0))
+            environment.map.blit(environment.infoMap, (0, 0))
 
             robot.move()
-            robot.draw(map.map)
+            robot.draw(environment.map)
 
             pygame.display.flip()
 

@@ -1,6 +1,7 @@
 from constants import ROBOT_DIMENSIONS, COLORS, SPEED, DIRECTIONS
 import math
 import pygame
+from map import Map
 
 
 class Robot:
