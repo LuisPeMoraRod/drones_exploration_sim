@@ -1,5 +1,5 @@
 import pygame
-import math
+from math import pi, cos, sin, sqrt
 import numpy as np
 from constants import COLORS, DIRECTIONS
 
@@ -22,6 +22,7 @@ class LaserSensor:
         self.w, self.h = pygame.display.get_surface().get_size()
         self.obstacles = []  # sensed obstacles
         self.map = map
+        self.direction = direction
 
     def sense(self):
         """
@@ -30,12 +31,21 @@ class LaserSensor:
         """
         data = []
         x1, y1 = self.position[0], self.position[1]  # current position of the robot
+
+        phi_start = (
+            (pi / 2 * self.direction) - pi / 4 + 2 * pi
+        )  # stating angle based on direction
+
+        phi_end = (
+            phi_start + pi / 2
+        )  # ending angle is 90 degrees from the starting angle
+
         for angle in np.linspace(
-            0, 2 * math.pi, 60, False
-        ):  # 60 rays distributed over 360 degrees
+            phi_start, phi_end, 15, False
+        ):  # 15 rays distributed over 90 degrees
             # calculate the end point of the ray
-            x2 = x1 + self.range * math.cos(angle)
-            y2 = y1 - self.range * math.sin(angle)
+            x2 = x1 + self.range * cos(angle)
+            y2 = y1 - self.range * sin(angle)
 
             # simulates laser beam
             for i in range(0, self.range):
@@ -63,7 +73,7 @@ class LaserSensor:
         """
         px = (obstaclePosition[0] - self.position[0]) ** 2
         py = (obstaclePosition[1] - self.position[1]) ** 2
-        return math.sqrt(px + py)
+        return sqrt(px + py)
 
     def addNoise(self, distance: float, angle: float, sigma: np.array) -> list:
         """

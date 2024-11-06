@@ -31,8 +31,6 @@ SPEED: int = 5
 # Simulation parameters
 RANGE = 500
 UNCERTAINTY = (0.5, 0.01)
-X0 = 0
-Y0 = 0
 ANGULAR_SPEED = 4
 
 # Robot initial position

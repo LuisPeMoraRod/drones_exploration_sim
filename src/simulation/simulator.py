@@ -14,8 +14,8 @@ class Simulator:
             originalMap,
             constants.UNCERTAINTY,
             constants.ANGULAR_SPEED,
-            constants.X0,
-            constants.Y0,
+            0,
+            0,
         )
         environment.map.fill(constants.COLORS["BLACK"])
         environment.resultMap = environment.map.copy()

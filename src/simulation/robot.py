@@ -69,19 +69,19 @@ class Robot:
 
         # Move the robot based on the key pressed
         if keys[pygame.K_UP]:
-            self.direction = DIRECTIONS["UP"]
+            self.direction = self.laser.direction = DIRECTIONS["UP"]
             if not self.isWallCollision():
                 self.moveUp()
         if keys[pygame.K_DOWN]:
-            self.direction = DIRECTIONS["DOWN"]
+            self.direction = self.laser.direction = DIRECTIONS["DOWN"]
             if not self.isWallCollision():
                 self.moveDown()
         if keys[pygame.K_LEFT]:
-            self.direction = DIRECTIONS["LEFT"]
+            self.direction = self.laser.direction = DIRECTIONS["LEFT"]
             if not self.isWallCollision():
                 self.moveLeft()
         if keys[pygame.K_RIGHT]:
-            self.direction = DIRECTIONS["RIGHT"]
+            self.direction = self.laser.direction = DIRECTIONS["RIGHT"]
             if not self.isWallCollision():
                 self.moveRight()
 

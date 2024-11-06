@@ -26,12 +26,10 @@ class ProcessOrchestrator:
         """
         This method starts the web view processes.
         """
-        # Start the web view process as a separate process
         subprocess.Popen(["python", "src/webview/main.py"])
 
     def execute_simulation(self):
         """
         This method starts the simulation process.
         """
-        # Start the simulation process as a separate process
         subprocess.Popen(["python", "src/simulation/main.py"])
