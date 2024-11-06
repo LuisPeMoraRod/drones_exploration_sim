@@ -109,8 +109,15 @@ class Configurator:
         y_entry = tk.Entry(self.root, width=5)
         y_entry.grid(row=row_index, column=1, padx=70, pady=5, sticky="w")
 
+        addr_label = tk.Label(self.root, text="Web server address:")
+        addr_label.grid(row=row_index, column=2, padx=5, pady=5, sticky="w")
+        addr_entry = tk.Entry(self.root, width=20)
+        addr_entry.grid(row=row_index, column=3, padx=5, pady=5, sticky="w")
+
         # Append to agent_rows for tracking
-        self.agent_rows.append((position_label, x_label, x_entry, y_label, y_entry))
+        self.agent_rows.append(
+            (position_label, x_label, x_entry, y_label, y_entry, addr_label, addr_entry)
+        )
 
         self.start_button.grid_forget()
         # Start button
@@ -120,9 +127,13 @@ class Configurator:
             command=self.close_window,
             state=self.start_button_state,
         )
-        self.start_button.grid(row=row_index + 1, column=0, columnspan=3, pady=10)
+        self.start_button.grid(row=row_index + 1, column=0, columnspan=5, pady=10)
 
     def add_initial_agent_rows(self, config_data):
+        """
+        Add the initial agent rows from the configuration file
+        """
+
         # Always add the first agent row
         self.add_agent_row()
 
@@ -140,6 +151,11 @@ class Configurator:
                     0, config_data.get("agents_initial_pos")[row][1]
                 )
 
+                # Insert the web server address from the configuration file
+                self.agent_rows[row][6].insert(
+                    0, config_data.get("servers_address")[row]
+                )
+
     def set_initial_file_path(self, config_data):
         if config_data:
             self.file_path.insert(0, config_data.get("map_file"))
@@ -150,12 +166,22 @@ class Configurator:
     def remove_agent_row(self):
         # Remove the last added row (label and entry fields)
         if self.agent_rows:
-            position_label, x_label, x_entry, y_label, y_entry = self.agent_rows.pop()
+            (
+                position_label,
+                x_label,
+                x_entry,
+                y_label,
+                y_entry,
+                addr_label,
+                addr_entry,
+            ) = self.agent_rows.pop()
             position_label.grid_forget()
             x_label.grid_forget()
             x_entry.grid_forget()
             y_label.grid_forget()
             y_entry.grid_forget()
+            addr_label.grid_forget()
+            addr_entry.grid_forget()
 
     def update_agents_label(self):
         # Update the label text with the current number of agents
@@ -168,13 +194,15 @@ class Configurator:
             "map_file": map_file,
             "agents_initial_pos": [
                 (x_entry.get() or INIT_X, y_entry.get() or INIT_Y)
-                for _, _, x_entry, _, y_entry in self.agent_rows
+                for _, _, x_entry, _, y_entry, _, _ in self.agent_rows
+            ],
+            "servers_address": [
+                addr_entry.get() for _, _, _, _, _, _, addr_entry in self.agent_rows
             ],
         }
 
         # Write data to a JSON file
         with open("./config/config.json", "w") as f:
-            # check if file was ope
             json.dump(config_data, f)
 
     def config_file_data(self):
