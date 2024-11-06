@@ -18,7 +18,8 @@ class Robot:
         self,
         environment: Map,
         initialPos: tuple,
-        color: str = COLORS["WHITE"],
+        color: tuple = COLORS["WHITE"],
+        colorSensor: tuple = COLORS["BLACK"],
         speed: int = SPEED,
     ) -> None:
         self.mapImage = (
@@ -34,6 +35,8 @@ class Robot:
         ]
 
         self.color = color
+        self.colorSensor = colorSensor
+
         self.direction = DIRECTIONS["RIGHT"]
         self.speed = speed
 
@@ -62,6 +65,23 @@ class Robot:
                 self.dimensions[1],
             ),
         )
+        # Draw a small circle to represent the sensor
+        pygame.draw.circle(
+            surface, self.colorSensor, self.sensorPosition(), self.dimensions[0] // 4
+        )
+
+    def sensorPosition(self):
+        """
+        Get the position of the sensor based on the direction of the robot.
+        """
+        if self.direction == DIRECTIONS["RIGHT"]:
+            return (self.position[0] + self.dimensions[0] // 3, self.position[1])
+        elif self.direction == DIRECTIONS["UP"]:
+            return (self.position[0], self.position[1] - self.dimensions[1] // 3)
+        elif self.direction == DIRECTIONS["LEFT"]:
+            return (self.position[0] - self.dimensions[0] // 3, self.position[1])
+        elif self.direction == DIRECTIONS["DOWN"]:
+            return (self.position[0], self.position[1] + self.dimensions[1] // 3)
 
     def move(self):
         # Get the state of the keys

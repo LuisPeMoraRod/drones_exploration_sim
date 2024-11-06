@@ -8,7 +8,9 @@ if __name__ == "__main__":
     environment = Map(constants.MAP_DIMENSIONS)
 
     # Initalize single robot
-    robot = Robot(environment, (300, 300), constants.COLORS["GREEN"])
+    robot = Robot(
+        environment, (300, 300), constants.COLORS["WHITE"], constants.COLORS["BLUE"]
+    )
 
     # Fill the map with black color
     environment.map.fill(constants.COLORS["BLACK"])
