@@ -17,11 +17,11 @@ if __name__ == "__main__":
         constants.X0,
         constants.Y0,
     )
-    environment.map.fill(constants.COLORS["BLACK"])
-    environment.infoMap = environment.map.copy()
+    # environment.map.fill(constants.COLORS["BLACK"])
+    environment.resultMap = environment.map.copy()
 
     # Initalize single robot
-    robot = Robot(environment.map, environment.mapImage, (300, 300))
+    robot = Robot(environment, (300, 300), constants.COLORS["GREEN"])
 
     # Initialize Pygame
     pygame.init()
@@ -37,9 +37,9 @@ if __name__ == "__main__":
         environment.storeData(sensorData)
         environment.showData()
 
-        environment.map.fill(constants.COLORS["BLACK"])
+        # environment.map.fill(constants.COLORS["BLACK"])
 
-        environment.map.blit(environment.infoMap, (0, 0))
+        environment.map.blit(environment.resultMap, (0, 0))
 
         robot.move()
         robot.draw(environment.map)

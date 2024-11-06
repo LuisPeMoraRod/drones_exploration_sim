@@ -18,7 +18,7 @@ class Simulator:
             constants.Y0,
         )
         environment.map.fill(constants.COLORS["BLACK"])
-        environment.infoMap = environment.map.copy()
+        environment.resultMap = environment.map.copy()
 
         # Initalize single robot
         robot = robot.Robot(environment.map, environment.mapImage, (300, 300))
@@ -39,7 +39,7 @@ class Simulator:
 
             environment.map.fill(constants.COLORS["BLACK"])
 
-            environment.map.blit(environment.infoMap, (0, 0))
+            environment.map.blit(environment.resultMap, (0, 0))
 
             robot.move()
             robot.draw(environment.map)

@@ -1,4 +1,4 @@
-from constants import ROBOT_DIMENSIONS, COLORS, SPEED, DIRECTIONS
+from constants import ROBOT_DIMENSIONS, COLORS, SPEED, DIRECTIONS, MAP_DIMENSIONS
 import math
 import pygame
 from map import Map
@@ -7,13 +7,15 @@ from map import Map
 class Robot:
     def __init__(
         self,
-        surface: pygame.Surface,
-        map: pygame.Surface,
+        environment: Map,
         initialPos: tuple,
         color: str = COLORS["WHITE"],
         speed: int = SPEED,
     ) -> None:
-        self.map = map
+        self.mapImage = (
+            environment.mapImage
+        )  # contains the map image used as reference for collision detection
+        self.map = environment.map  # contains the map surface to draw the robot
         self.dimensions = ROBOT_DIMENSIONS
         self.position = [
             initialPos[0] + self.dimensions[0] // 2,
@@ -21,7 +23,6 @@ class Robot:
         ]
         self.color = color
         self.direction = DIRECTIONS["RIGHT"]
-        self.surface = surface
         self.speed = speed
 
     def draw(self, surface: pygame.Surface):
@@ -46,22 +47,22 @@ class Robot:
         # Move the square
         if keys[pygame.K_UP]:
             self.direction = DIRECTIONS["UP"]
-            if not self.isWall():
+            if not self.isWallCollision():
                 self.moveUp()
         if keys[pygame.K_DOWN]:
             self.direction = DIRECTIONS["DOWN"]
-            if not self.isWall():
+            if not self.isWallCollision():
                 self.moveDown()
         if keys[pygame.K_LEFT]:
             self.direction = DIRECTIONS["LEFT"]
-            if not self.isWall():
+            if not self.isWallCollision():
                 self.moveLeft()
         if keys[pygame.K_RIGHT]:
             self.direction = DIRECTIONS["RIGHT"]
-            if not self.isWall():
+            if not self.isWallCollision():
                 self.moveRight()
 
-    def isWall(self) -> bool:
+    def isWallCollision(self) -> bool:
         """
         Check if the robot hits the wall.
         """
@@ -71,37 +72,160 @@ class Robot:
         if self.direction == DIRECTIONS["UP"]:
             if self.position[1] - verticalCheck <= 0:
                 return True
-            if (
-                self.map.get_at((self.position[0], self.position[1] - verticalCheck))
-                == COLORS["BLACK"]
-            ):
+            if self.isCollisionTop():
                 return True
+
         elif self.direction == DIRECTIONS["DOWN"]:
-            if self.position[1] + verticalCheck >= self.surface.get_height():
+            if self.position[1] + verticalCheck >= self.map.get_height():
                 return True
-            if (
-                self.map.get_at((self.position[0], self.position[1] + verticalCheck))
-                == COLORS["BLACK"]
-            ):
+            if self.isCollisionBottom():
                 return True
+
         elif self.direction == DIRECTIONS["LEFT"]:
             if self.position[0] - horizontalCheck <= 0:
                 return True
-            if (
-                self.map.get_at((self.position[0] - horizontalCheck, self.position[1]))
-                == COLORS["BLACK"]
-            ):
+            if self.isCollisionLeft():
                 return True
+
         elif self.direction == DIRECTIONS["RIGHT"]:
-            if self.position[0] + horizontalCheck >= self.surface.get_width():
+            if self.position[0] + horizontalCheck >= self.map.get_width():
                 return True
-            if (
-                self.map.get_at((self.position[0] + horizontalCheck, self.position[1]))
-                == COLORS["BLACK"]
-            ):
+            if self.isCollisionRight():
                 return True
 
         return False
+
+    def isCollisionTop(self):
+        """
+        Check if the robot's top side collides with a wall
+        """
+        horizontalBorder = self.dimensions[0] // 2
+        verticalBorder = self.dimensions[1] // 2 + self.speed
+        return (
+            (
+                self.mapImage.get_at(
+                    (self.position[0], self.position[1] - verticalBorder)
+                )
+                == COLORS["BLACK"]
+            )
+            or (
+                self.mapImage.get_at(
+                    (
+                        self.position[0] + horizontalBorder,
+                        self.position[1] - verticalBorder,
+                    )
+                )
+                == COLORS["BLACK"]
+            )
+            or (
+                self.mapImage.get_at(
+                    (
+                        self.position[0] - horizontalBorder,
+                        self.position[1] - verticalBorder,
+                    )
+                )
+                == COLORS["BLACK"]
+            )
+        )
+
+    def isCollisionBottom(self):
+        """
+        Check if the robot's bottom side collides with a wall
+        """
+        horizontalBorder = self.dimensions[0] // 2
+        verticalBorder = self.dimensions[1] // 2 + self.speed
+        return (
+            (
+                self.mapImage.get_at(
+                    (self.position[0], self.position[1] + verticalBorder)
+                )
+                == COLORS["BLACK"]
+            )
+            or (
+                self.mapImage.get_at(
+                    (
+                        self.position[0] + horizontalBorder,
+                        self.position[1] + verticalBorder,
+                    )
+                )
+                == COLORS["BLACK"]
+            )
+            or (
+                self.mapImage.get_at(
+                    (
+                        self.position[0] - horizontalBorder,
+                        self.position[1] + verticalBorder,
+                    )
+                )
+                == COLORS["BLACK"]
+            )
+        )
+
+    def isCollisionLeft(self):
+        """
+        Check if the robot's left side collides with a wall
+        """
+        horizontalBorder = self.dimensions[0] // 2 + self.speed
+        verticalBorder = self.dimensions[1] // 2
+        return (
+            (
+                self.mapImage.get_at(
+                    (self.position[0] - horizontalBorder, self.position[1])
+                )
+                == COLORS["BLACK"]
+            )
+            or (
+                self.mapImage.get_at(
+                    (
+                        self.position[0] - horizontalBorder,
+                        self.position[1] + verticalBorder,
+                    )
+                )
+                == COLORS["BLACK"]
+            )
+            or (
+                self.mapImage.get_at(
+                    (
+                        self.position[0] - horizontalBorder,
+                        self.position[1] - verticalBorder,
+                    )
+                )
+                == COLORS["BLACK"]
+            )
+        )
+
+    def isCollisionRight(self):
+        """
+        Check if the robot's right side collides with a wall
+        """
+        horizontalBorder = self.dimensions[0] // 2 + self.speed
+        verticalBorder = self.dimensions[1] // 2
+        return (
+            (
+                self.mapImage.get_at(
+                    (self.position[0] + horizontalBorder, self.position[1])
+                )
+                == COLORS["BLACK"]
+            )
+            or (
+                self.mapImage.get_at(
+                    (
+                        self.position[0] + horizontalBorder,
+                        self.position[1] + verticalBorder,
+                    )
+                )
+                == COLORS["BLACK"]
+            )
+            or (
+                self.mapImage.get_at(
+                    (
+                        self.position[0] + horizontalBorder,
+                        self.position[1] - verticalBorder,
+                    )
+                )
+                == COLORS["BLACK"]
+            )
+        )
 
     def moveUp(self):
         self.position[1] -= self.speed
