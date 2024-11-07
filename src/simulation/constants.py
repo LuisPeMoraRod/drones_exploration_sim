@@ -25,9 +25,10 @@ ROBOT_DIMENSIONS: tuple = (21, 21)
 SPEED: int = 5
 
 # Simulation parameters
-RANGE = 300
+RANGE = 100
 UNCERTAINTY = (0.5, 0.01)
 ANGULAR_SPEED = 4
+RAYS_AMOUNT = 50
 
 # Robot initial position
 INIT_X = 11

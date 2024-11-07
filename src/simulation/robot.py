@@ -12,6 +12,7 @@ from constants import (
 import pygame
 from map import Map
 from sensors import LaserSensor
+from occupancy_grid import OccupancyGrid
 
 
 class Robot:
@@ -42,8 +43,8 @@ class Robot:
         self.direction = DIRECTIONS["RIGHT"]
         self.speed = speed
 
-        # Initialize the grid
-        self.grid = self.setGrid()
+        # Initialize the ocuppancy grid
+        self.grid = OccupancyGrid(self.map).grid
 
         # Initialize the laser sensor
         self.laser = LaserSensor(
@@ -57,33 +58,34 @@ class Robot:
             self.direction,
         )
 
-    def setGrid(self):
-        """
-        Create grid that is going to be used as a graph for the A* algorithm to find the path to the goal of every frontier (centroid)
+        # Store array of points that are detected by the sensor as obstacles
+        self.sensorData = []
 
-        The grid will consist of a 2D array where each cell can have the possible values: unknown, free, obstacle, frontier, goal
-
-        The cells will represent a 5x5 pixel area of the map. So the grid will have the same dimensions as the map but divided by 5.
-        For example, for a map of 640x1280 pixels, the grid will have 128x256 cells.
-
-        At the beginning, all cells will be unknown. The robot will update the cells as it explores the map.
-        """
-        grid = []
-        for i in range(0, self.map.get_height(), GRID_DIMENTIONS[1]):
-            row = []
-            for j in range(0, self.map.get_width(), GRID_DIMENTIONS[0]):
-                row.append(GRID_VALUES["UNKNOWN"])
-            grid.append(row)
-        return grid
+        # Store the frontiers of the occupancy grid
+        self.frontiers = []
 
     def sense(self):
         """
         Sense the environment using the laser sensor.
         """
+        # Update the laser sensor position
+        self.laser.position = self.position
         data = self.laser.sense()
         self.grid = self.laser.grid
-        self.environment.showGrid(self.grid)
-        return data
+        self.environment.showGrid(self.grid)  # Display the exploration grid on the map
+        self.environment.storeData(data)  # Update the map with the sensor data
+
+    def setFrontiers(self):
+        """
+        Find the frontiers of the occupancy grid.
+
+        The frontiers are the cells that are adjacent to the free cells and are unknown.
+        """
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid[i])):
+                if self.grid[i][j] == GRID_VALUES["FREE"]:
+                    if self.isFrontier(i, j):
+                        self.frontiers.append((i, j))
 
     def draw(self, surface: pygame.Surface):
         """
@@ -126,21 +128,25 @@ class Robot:
             self.direction = self.laser.direction = DIRECTIONS["UP"]
             if not self.isWallCollision():
                 self.moveUp()
+                self.sense()
+
         if keys[pygame.K_DOWN]:
             self.direction = self.laser.direction = DIRECTIONS["DOWN"]
             if not self.isWallCollision():
                 self.moveDown()
+                self.sense()
+
         if keys[pygame.K_LEFT]:
             self.direction = self.laser.direction = DIRECTIONS["LEFT"]
             if not self.isWallCollision():
                 self.moveLeft()
+                self.sense()
+
         if keys[pygame.K_RIGHT]:
             self.direction = self.laser.direction = DIRECTIONS["RIGHT"]
             if not self.isWallCollision():
                 self.moveRight()
-
-        # Update the laser sensor position
-        self.laser.position = self.position
+                self.sense()
 
     def isWallCollision(self) -> bool:
         """

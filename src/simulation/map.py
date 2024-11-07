@@ -43,9 +43,9 @@ class Map:
                 if point not in self.pointsCloud:
                     self.pointsCloud.append(point)
 
-    def showData(self) -> None:
+    def showSensorData(self) -> None:
         """
-        Display the data on the map.
+        Display the sensed data on the map.
         """
         for point in self.pointsCloud:
             self.resultMap.set_at(point, COLORS["RED"])

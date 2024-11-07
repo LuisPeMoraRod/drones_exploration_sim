@@ -1,7 +1,7 @@
 import pygame
 from math import pi, cos, sin, sqrt
 import numpy as np
-from constants import COLORS, DIRECTIONS, GRID_VALUES
+from constants import COLORS, DIRECTIONS, GRID_VALUES, RAYS_AMOUNT
 
 
 class LaserSensor:
@@ -44,7 +44,7 @@ class LaserSensor:
         )  # ending angle is 90 degrees from the starting angle
 
         for angle in np.linspace(
-            phi_start, phi_end, 15, False
+            phi_start, phi_end, RAYS_AMOUNT, False
         ):  # 15 rays distributed over 90 degrees
             # calculate the end point of the ray
             x2 = x1 + self.range * cos(angle)

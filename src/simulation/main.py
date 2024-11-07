@@ -25,10 +25,8 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 running = False
 
-        # Sensing the environment
-        sensorData = robot.sense()
-        environment.storeData(sensorData)
-        environment.showData()
+        # Display the sensed points
+        environment.showSensorData()
 
         # Display the map with the updated data
         environment.map.blit(environment.resultMap, (0, 0))
