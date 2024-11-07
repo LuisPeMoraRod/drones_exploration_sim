@@ -75,9 +75,9 @@ class Map:
                 elif cell == 2:
                     color = COLORS["BLACK"]
                 elif cell == 3:
-                    color = COLORS["GREEN"]
-                elif cell == 4:
                     color = COLORS["BLUE"]
+                elif cell == 4:
+                    color = COLORS["RED"]
                 pygame.draw.rect(
                     self.resultMap,
                     color,

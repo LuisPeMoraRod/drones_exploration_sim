@@ -63,17 +63,23 @@ class OccupancyGrid:
             start[1] // GRID_CELL_DIMENTIONS[1],
         )
 
+        # add current position to flood fill and set as reached
         flood_fill = deque()
         flood_fill.append(startGrid)
         reached = set()
         reached.add(startGrid)
 
         while len(flood_fill) > 0:
-            current = flood_fill.popleft()
+            current = flood_fill.popleft()  # get the first element of the queue
+            if self.isFrontier(current):  # handle frontier cell
+                self.grid[current[1]][current[0]] = GRID_VALUES["FRONTIER"]
             for neighbor in self.getNeighbors(current):
                 if neighbor not in reached:
-                    reached.add(neighbor)
-                    flood_fill.append(neighbor)
+                    if (
+                        self.grid[neighbor[1]][neighbor[0]] == GRID_VALUES["FREE"]
+                    ):  # only add free cells to the queue
+                        reached.add(neighbor)
+                        flood_fill.append(neighbor)
 
     def getNeighbors(self, cell: tuple) -> list:
         """
@@ -87,6 +93,14 @@ class OccupancyGrid:
                 x = cell[0] + i
                 y = cell[1] + j
                 if x >= 0 and x < len(self.grid[0]) and y >= 0 and y < len(self.grid):
-                    if self.grid[y][x] == GRID_VALUES["FREE"]:
-                        neighbors.append((x, y))
+                    neighbors.append((x, y))
         return neighbors
+
+    def isFrontier(self, cell: tuple) -> bool:
+        """
+        Check if a cell is a frontier
+        """
+        for neighbor in self.getNeighbors(cell):
+            if self.grid[neighbor[1]][neighbor[0]] == GRID_VALUES["UNKNOWN"]:
+                return True
+        return False
