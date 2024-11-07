@@ -6,8 +6,9 @@ from constants import (
     UNCERTAINTY,
     ANGULAR_SPEED,
     RANGE,
+    GRID_VALUES,
+    GRID_DIMENTIONS,
 )
-import math
 import pygame
 from map import Map
 from sensors import LaserSensor
@@ -22,6 +23,7 @@ class Robot:
         colorSensor: tuple = COLORS["BLACK"],
         speed: int = SPEED,
     ) -> None:
+        self.environment = environment
         self.mapImage = (
             environment.mapImage
         )  # contains the map image used as reference for collision detection
@@ -40,6 +42,9 @@ class Robot:
         self.direction = DIRECTIONS["RIGHT"]
         self.speed = speed
 
+        # Initialize the grid
+        self.grid = self.setGrid()
+
         # Initialize the laser sensor
         self.laser = LaserSensor(
             RANGE,
@@ -48,8 +53,37 @@ class Robot:
             ANGULAR_SPEED,
             self.position[0],
             self.position[1],
+            self.grid,
             self.direction,
         )
+
+    def setGrid(self):
+        """
+        Create grid that is going to be used as a graph for the A* algorithm to find the path to the goal of every frontier (centroid)
+
+        The grid will consist of a 2D array where each cell can have the possible values: unknown, free, obstacle, frontier, goal
+
+        The cells will represent a 5x5 pixel area of the map. So the grid will have the same dimensions as the map but divided by 5.
+        For example, for a map of 640x1280 pixels, the grid will have 128x256 cells.
+
+        At the beginning, all cells will be unknown. The robot will update the cells as it explores the map.
+        """
+        grid = []
+        for i in range(0, self.map.get_height(), GRID_DIMENTIONS[1]):
+            row = []
+            for j in range(0, self.map.get_width(), GRID_DIMENTIONS[0]):
+                row.append(GRID_VALUES["UNKNOWN"])
+            grid.append(row)
+        return grid
+
+    def sense(self):
+        """
+        Sense the environment using the laser sensor.
+        """
+        data = self.laser.sense()
+        self.grid = self.laser.grid
+        self.environment.showGrid(self.grid)
+        return data
 
     def draw(self, surface: pygame.Surface):
         """

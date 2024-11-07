@@ -18,21 +18,28 @@ DIRECTIONS: dict = {
 }
 
 # Map dimensions
-MAP_DIMENSIONS: tuple = (600, 1200)
-
-# Configuration window dimensions
-CONFIG_W = 500
-CONFIG_H = 300
+MAP_DIMENSIONS: tuple = (1280, 640)
 
 # Robot dimensions
 ROBOT_DIMENSIONS: tuple = (21, 21)
 SPEED: int = 5
 
 # Simulation parameters
-RANGE = 500
+RANGE = 300
 UNCERTAINTY = (0.5, 0.01)
 ANGULAR_SPEED = 4
 
 # Robot initial position
 INIT_X = 11
 INIT_Y = 11
+
+# Grid cell values
+GRID_VALUES: dict = {
+    "UNKNOWN": 0,
+    "FREE": 1,
+    "OBSTACLE": 2,
+    "FRONTIER": 3,
+    "GOAL": 4,
+}
+
+GRID_DIMENTIONS: tuple = (5, 5)

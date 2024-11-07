@@ -9,11 +9,11 @@ if __name__ == "__main__":
 
     # Initalize single robot
     robot = Robot(
-        environment, (300, 300), constants.COLORS["WHITE"], constants.COLORS["BLUE"]
+        environment, (300, 300), constants.COLORS["GREEN"], constants.COLORS["BLUE"]
     )
 
     # Fill the map with black color
-    environment.map.fill(constants.COLORS["BLACK"])
+    # environment.map.fill(constants.COLORS["BLACK"])
     environment.resultMap = environment.map.copy()
 
     # Initialize Pygame
@@ -26,7 +26,7 @@ if __name__ == "__main__":
                 running = False
 
         # Sensing the environment
-        sensorData = robot.laser.sense()
+        sensorData = robot.sense()
         environment.storeData(sensorData)
         environment.showData()
 

@@ -1,6 +1,6 @@
 import math
 import pygame
-from constants import COLORS
+from constants import COLORS, GRID_DIMENTIONS
 
 
 class Map:
@@ -10,7 +10,7 @@ class Map:
         self.mapImage = pygame.image.load(
             "images/map.png"
         )  # Load the reference map image
-        self.map_h, self.map_w = MapDimensions
+        self.map_w, self.map_h = MapDimensions
         self.map = None
         self.displayMap()
 
@@ -49,3 +49,37 @@ class Map:
         """
         for point in self.pointsCloud:
             self.resultMap.set_at(point, COLORS["RED"])
+
+    def showGrid(self, grid: list) -> None:
+        """
+        Display the grid on the map.
+
+        The grid is a 2D list containing the value of every cell.
+        If the value is 0, the cell is unknown and the color is gray.
+        If the value is 1, the cell is free and the color is white.
+        If the value is 2, the cell is an obstacle and the color is black.
+        If the value is 3, the cell is a frontier and the color is green.
+        If the value is 4, the cell is the goal and the color is blue.
+
+        The position of the grid cell is the top left corner of the cell which is a 5 x 5 square.
+        """
+        for i in range(len(grid)):
+            for j in range(len(grid[i])):
+                x = j * GRID_DIMENTIONS[0]
+                y = i * GRID_DIMENTIONS[1]
+                cell = grid[i][j]
+                if cell == 0:
+                    color = COLORS["GRAY"]
+                elif cell == 1:
+                    color = COLORS["WHITE"]
+                elif cell == 2:
+                    color = COLORS["BLACK"]
+                elif cell == 3:
+                    color = COLORS["GREEN"]
+                elif cell == 4:
+                    color = COLORS["BLUE"]
+                pygame.draw.rect(
+                    self.resultMap,
+                    color,
+                    (x, y, GRID_DIMENTIONS[0], GRID_DIMENTIONS[1]),
+                )

@@ -1,7 +1,7 @@
 import pygame
 from math import pi, cos, sin, sqrt
 import numpy as np
-from constants import COLORS, DIRECTIONS
+from constants import COLORS, DIRECTIONS, GRID_VALUES
 
 
 class LaserSensor:
@@ -13,6 +13,7 @@ class LaserSensor:
         speed: int,
         x: int,
         y: int,
+        grid: list,
         direction: int = DIRECTIONS["RIGHT"],
     ) -> None:
         self.range = range
@@ -23,11 +24,13 @@ class LaserSensor:
         self.obstacles = []  # sensed obstacles
         self.map = map
         self.direction = direction
+        self.grid = grid
 
     def sense(self):
         """
         Simulate the laser sensor by casting rays in all directions and detecting obstacles.
         The sensor returns the distance and angle of the detected obstacles relative to the robot position.
+        Also, it updates the grid with the cells that are detected as obstacles, and the cells that are free.
         """
         data = []
         x1, y1 = self.position[0], self.position[1]  # current position of the robot
@@ -57,15 +60,26 @@ class LaserSensor:
                     0 < x < self.w and 0 < y < self.h
                 ):  # check if the point is within the map
                     color = self.map.get_at((x, y))
-                    if color == COLORS["BLACK"]:
+                    if color != COLORS["WHITE"]:
                         distance = self.euclideanDistance((x, y))
                         output = self.addNoise(distance, angle, self.sigma)
                         output.append(self.position)
                         data.append(output)
+                        self.updateCell(x, y, GRID_VALUES["OBSTACLE"])
                         break
+                    else:
+                        self.updateCell(x, y, GRID_VALUES["FREE"])
         if len(data) > 0:
             return data
         return False
+
+    def updateCell(self, x: int, y: int, value: int) -> None:
+        """
+        Update the value of the cell in the grid.
+        """
+        i = y // 5
+        j = x // 5
+        self.grid[i][j] = value
 
     def euclideanDistance(self, obstaclePosition: tuple) -> float:
         """
