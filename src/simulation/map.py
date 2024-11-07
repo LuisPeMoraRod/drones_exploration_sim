@@ -1,6 +1,6 @@
 import math
 import pygame
-from constants import COLORS, GRID_DIMENTIONS
+from constants import COLORS, GRID_CELL_DIMENTIONS
 
 
 class Map:
@@ -65,8 +65,8 @@ class Map:
         """
         for i in range(len(grid)):
             for j in range(len(grid[i])):
-                x = j * GRID_DIMENTIONS[0]
-                y = i * GRID_DIMENTIONS[1]
+                x = j * GRID_CELL_DIMENTIONS[0]
+                y = i * GRID_CELL_DIMENTIONS[1]
                 cell = grid[i][j]
                 if cell == 0:
                     color = COLORS["GRAY"]
@@ -81,5 +81,5 @@ class Map:
                 pygame.draw.rect(
                     self.resultMap,
                     color,
-                    (x, y, GRID_DIMENTIONS[0], GRID_DIMENTIONS[1]),
+                    (x, y, GRID_CELL_DIMENTIONS[0], GRID_CELL_DIMENTIONS[1]),
                 )

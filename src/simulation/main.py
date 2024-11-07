@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
     # Initalize single robot
     robot = Robot(
-        environment, (300, 300), constants.COLORS["GREEN"], constants.COLORS["BLUE"]
+        environment, (350, 300), constants.COLORS["GREEN"], constants.COLORS["BLUE"]
     )
 
     # Fill the map with black color

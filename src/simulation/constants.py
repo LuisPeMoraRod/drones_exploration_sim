@@ -43,4 +43,4 @@ GRID_VALUES: dict = {
     "GOAL": 4,
 }
 
-GRID_DIMENTIONS: tuple = (5, 5)
+GRID_CELL_DIMENTIONS: tuple = (5, 5)

@@ -6,8 +6,6 @@ from constants import (
     UNCERTAINTY,
     ANGULAR_SPEED,
     RANGE,
-    GRID_VALUES,
-    GRID_DIMENTIONS,
 )
 import pygame
 from map import Map
@@ -44,7 +42,7 @@ class Robot:
         self.speed = speed
 
         # Initialize the ocuppancy grid
-        self.grid = OccupancyGrid(self.map).grid
+        self.grid = OccupancyGrid(self.map, environment)
 
         # Initialize the laser sensor
         self.laser = LaserSensor(
@@ -54,7 +52,7 @@ class Robot:
             ANGULAR_SPEED,
             self.position[0],
             self.position[1],
-            self.grid,
+            self.grid.getGrid(),
             self.direction,
         )
 
@@ -71,21 +69,12 @@ class Robot:
         # Update the laser sensor position
         self.laser.position = self.position
         data = self.laser.sense()
-        self.grid = self.laser.grid
-        self.environment.showGrid(self.grid)  # Display the exploration grid on the map
+        self.grid.setGrid(self.laser.grid)
+        self.grid.breadthFirstSearch(self.position)  # find the frontiers
+        self.environment.showGrid(
+            self.grid.getGrid()
+        )  # Display the exploration grid on the map
         self.environment.storeData(data)  # Update the map with the sensor data
-
-    def setFrontiers(self):
-        """
-        Find the frontiers of the occupancy grid.
-
-        The frontiers are the cells that are adjacent to the free cells and are unknown.
-        """
-        for i in range(len(self.grid)):
-            for j in range(len(self.grid[i])):
-                if self.grid[i][j] == GRID_VALUES["FREE"]:
-                    if self.isFrontier(i, j):
-                        self.frontiers.append((i, j))
 
     def draw(self, surface: pygame.Surface):
         """
