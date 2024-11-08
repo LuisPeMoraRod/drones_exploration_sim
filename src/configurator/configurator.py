@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
-from constants import CONFIG_W, CONFIG_H, INIT_X, INIT_Y, CONFIG_STATUS
+from constants import CONFIG_W, CONFIG_H, INIT_X, INIT_Y, CONFIG_STATUS, MAX_AGENTS
 import json
 
 
@@ -78,7 +78,7 @@ class Configurator:
 
     def increment_agents(self):
         # Increment agents up to a maximum of 5 and add a new row
-        if self.agents < 5:
+        if self.agents <= MAX_AGENTS:
             self.agents += 1
             self.update_agents_label()
             self.add_agent_row()

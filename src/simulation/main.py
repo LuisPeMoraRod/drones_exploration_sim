@@ -2,18 +2,21 @@ from map import Map
 from robot import Robot
 import constants
 import pygame
+from robots_orchestrator import RobotsOrchestrator
+from utils import config_file_data
 
 if __name__ == "__main__":
+    # get configuration data
+    config_data = config_file_data()
+
     # Initialize the environment
-    environment = Map(constants.MAP_DIMENSIONS)
+    environment = Map(constants.MAP_DIMENSIONS, config_data.get("map_file"))
 
     # Initalize single robot
-    robot = Robot(
-        environment, (350, 300), constants.COLORS["GREEN"], constants.COLORS["BLUE"]
-    )
+    orchestrator = RobotsOrchestrator(environment)
 
     # Fill the map with black color
-    # environment.map.fill(constants.COLORS["BLACK"])
+    environment.map.fill(constants.COLORS["BLACK"])
     environment.resultMap = environment.map.copy()
 
     # Initialize Pygame
@@ -31,9 +34,8 @@ if __name__ == "__main__":
         # Display the map with the updated data
         environment.map.blit(environment.resultMap, (0, 0))
 
-        # Move robot on key press
-        robot.move()
-        robot.draw(environment.map)
+        # Move robots
+        orchestrator.move_robots()
 
         pygame.display.flip()
 

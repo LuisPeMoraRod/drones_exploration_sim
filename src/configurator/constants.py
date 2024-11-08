@@ -9,3 +9,5 @@ INIT_X = 11
 INIT_Y = 11
 
 CONFIG_STATUS = {"READY": "ready", "INTERRUPTED": "interrupted"}
+
+MAX_AGENTS = 4

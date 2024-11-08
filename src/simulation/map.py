@@ -4,12 +4,10 @@ from constants import COLORS, GRID_CELL_DIMENTIONS
 
 
 class Map:
-    def __init__(self, MapDimensions: tuple) -> None:
+    def __init__(self, MapDimensions: tuple, mapFile: str) -> None:
         pygame.init()
         self.pointsCloud = []  # List of points to be displayed on the map
-        self.mapImage = pygame.image.load(
-            "images/map.png"
-        )  # Load the reference map image
+        self.mapImage = pygame.image.load(mapFile)  # Load the reference map image
         self.map_w, self.map_h = MapDimensions
         self.map = None
         self.displayMap()
