@@ -1,4 +1,6 @@
 import subprocess
+import json
+from configurator.constants import CONFIG_STATUS
 
 
 class ProcessOrchestrator:
@@ -9,8 +11,12 @@ class ProcessOrchestrator:
     def __init__(self):
         # Execute the configuration process
         self.configuration_process()
-        # self.execute_web_views()
-        self.execute_simulation()
+
+        # Execute simulation process if configuration is ready
+        config_status = self.get_config_status()
+        if config_status == CONFIG_STATUS["READY"]:
+            # self.execute_web_views()
+            self.execute_simulation()
 
     def configuration_process(self):
         """
@@ -33,3 +39,16 @@ class ProcessOrchestrator:
         This method starts the simulation process.
         """
         subprocess.Popen(["python", "src/simulation/main.py"])
+
+    def get_config_status(self):
+        """
+        This method returns the status of the configuration process
+        """
+        try:
+            # Read configuration file and return the data
+            with open("./config/config.json", "r") as f:
+                config_data = json.load(f)
+                return config_data["config_status"]
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"Error loading configuration file: {e}")
+            return None

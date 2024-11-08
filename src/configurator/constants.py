@@ -7,3 +7,5 @@ CONFIG_H = 300
 # Robot initial position
 INIT_X = 11
 INIT_Y = 11
+
+CONFIG_STATUS = {"READY": "ready", "INTERRUPTED": "interrupted"}

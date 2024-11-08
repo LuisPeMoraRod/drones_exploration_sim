@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
-from constants import CONFIG_W, CONFIG_H, INIT_X, INIT_Y
+from constants import CONFIG_W, CONFIG_H, INIT_X, INIT_Y, CONFIG_STATUS
 import json
 
 
@@ -14,6 +14,8 @@ class Configurator:
         # Set up the main window
         root.title("Configuration")
         root.geometry(f"{CONFIG_W}x{CONFIG_H}")
+        # Protocol for the "X" button
+        root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         # Configure grid layout for responsiveness
         root.grid_columnconfigure(1, weight=1)  # Entry field column expands
@@ -57,7 +59,7 @@ class Configurator:
         self.start_button = tk.Button(
             root,
             text="Start",
-            command=self.write_agent_info,
+            command=self.write_config_file,
             state=self.start_button_state,
         )
         self.start_button.grid(row=3, column=0, columnspan=3, pady=10)
@@ -187,8 +189,16 @@ class Configurator:
         # Update the label text with the current number of agents
         self.agents_label.config(text=f"Amount of agents: {self.agents}")
 
-    def write_agent_info(self):
-        # Retrieve data from entry fields and write them to configuration file
+    def write_config_file(self, config_data):
+        try:
+            # Write data to a JSON file
+            with open("./config/config.json", "w") as f:
+                json.dump(config_data, f)
+        except Exception as e:
+            print(f"Error writing configuration file: {e}")
+
+    def get_config_data(self):
+        # Retrieve data from entry fields
         map_file = self.file_path.get() or None  # Default to None if empty
         config_data = {
             "map_file": map_file,
@@ -199,14 +209,11 @@ class Configurator:
             "servers_address": [
                 addr_entry.get() for _, _, _, _, _, _, addr_entry in self.agent_rows
             ],
+            "config_status": CONFIG_STATUS["READY"],
         }
-
-        # Write data to a JSON file
-        with open("./config/config.json", "w") as f:
-            json.dump(config_data, f)
+        return config_data
 
     def config_file_data(self):
-        # Check if file exists
         try:
             # Read configuration file and return the data
             with open("./config/config.json", "r") as f:
@@ -217,6 +224,14 @@ class Configurator:
 
     def close_window(self):
         # Write the agent information to the configuration file
-        self.write_agent_info()
+        config_data = self.get_config_data()
+        self.write_config_file(config_data)
         # Close the configuration window
         self.root.destroy()
+
+    def on_closing(self):
+        if tk.messagebox.askokcancel("Quit", "Do you want to quit?"):
+            config_data = self.get_config_data()
+            config_data["config_status"] = CONFIG_STATUS["INTERRUPTED"]
+            self.write_config_file(config_data)
+            self.root.destroy()

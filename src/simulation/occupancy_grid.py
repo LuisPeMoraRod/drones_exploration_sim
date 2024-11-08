@@ -1,7 +1,6 @@
 import pygame
 from constants import GRID_CELL_DIMENTIONS, GRID_VALUES
 from collections import deque
-from time import sleep
 from map import Map
 
 
