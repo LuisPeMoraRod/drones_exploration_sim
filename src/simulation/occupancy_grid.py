@@ -70,7 +70,7 @@ class OccupancyGrid:
         reached = set()
         reached.add(startGrid)
 
-        while len(flood_fill) > 0:
+        while flood_fill:
             current = flood_fill.popleft()  # get the first element of the queue
             if self.isFrontier(current):  # handle frontier cell
                 self.grid[current[0], current[1]] = GRID_VALUES["FRONTIER"]
@@ -136,3 +136,6 @@ class OccupancyGrid:
         frontiers = unknown_cells & (adjacent_free > 0)
 
         return frontiers
+
+    def frontierBFS(self):
+        pass
