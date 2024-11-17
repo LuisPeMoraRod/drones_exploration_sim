@@ -2,6 +2,8 @@ import pygame
 from constants import GRID_CELL_DIMENTIONS, GRID_VALUES
 from collections import deque
 from map import Map
+import numpy as np
+from scipy.ndimage import convolve
 
 
 class OccupancyGrid:
@@ -50,7 +52,7 @@ class OccupancyGrid:
             for j in range(0, map.get_width(), GRID_CELL_DIMENTIONS[0]):
                 row.append(GRID_VALUES["UNKNOWN"])
             grid.append(row)
-        return grid
+        return np.array(grid)
 
     def breadthFirstSearch(self, start: list) -> None:
         """
@@ -71,11 +73,11 @@ class OccupancyGrid:
         while len(flood_fill) > 0:
             current = flood_fill.popleft()  # get the first element of the queue
             if self.isFrontier(current):  # handle frontier cell
-                self.grid[current[1]][current[0]] = GRID_VALUES["FRONTIER"]
+                self.grid[current[0], current[1]] = GRID_VALUES["FRONTIER"]
             for neighbor in self.getNeighbors(current):
                 if neighbor not in reached:
                     if (
-                        self.grid[neighbor[1]][neighbor[0]] == GRID_VALUES["FREE"]
+                        self.grid[neighbor[0], neighbor[1]] == GRID_VALUES["FREE"]
                     ):  # only add free cells to the queue
                         reached.add(neighbor)
                         flood_fill.append(neighbor)
@@ -91,7 +93,12 @@ class OccupancyGrid:
                     continue
                 x = cell[0] + i
                 y = cell[1] + j
-                if x >= 0 and x < len(self.grid[0]) and y >= 0 and y < len(self.grid):
+                if (
+                    x >= 0
+                    and x < self.grid.shape[0]
+                    and y >= 0
+                    and y < self.grid.shape[1]
+                ):
                     neighbors.append((x, y))
         return neighbors
 
@@ -100,6 +107,32 @@ class OccupancyGrid:
         Check if a cell is a frontier
         """
         for neighbor in self.getNeighbors(cell):
-            if self.grid[neighbor[1]][neighbor[0]] == GRID_VALUES["UNKNOWN"]:
+            if self.grid[neighbor[0], neighbor[1]] == GRID_VALUES["UNKNOWN"]:
                 return True
         return False
+
+    def findFrontiers(self) -> None:
+        """
+        Find the frontiers of the occupancy grid
+        """
+        frontiers = self.convolution()
+        print(frontiers)
+
+    def convolution(self) -> np.ndarray:
+        """
+        Apply a convolution filter to the grid to find the frontiers
+        """
+        # Define a 3x3 kernel to identify adjacent cells
+        kernel = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]])
+
+        # Create a mask for unknown cells
+        unknown_cells = (self.grid == -1).astype(int)
+
+        # Create a mask for free cells
+        free_cells = (self.grid == 0).astype(int)
+
+        # Convolve to find unknown cells adjacent to free cells
+        adjacent_free = convolve(free_cells, kernel, mode="constant", cval=0)
+        frontiers = unknown_cells & (adjacent_free > 0)
+
+        return frontiers

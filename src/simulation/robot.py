@@ -71,9 +71,11 @@ class Robot:
         data = self.laser.sense()
         self.grid.setGrid(self.laser.grid)
         self.grid.breadthFirstSearch(self.position)  # find the frontiers
-        # self.environment.showGrid(
-        #     self.grid.getGrid()
-        # )  # Display the exploration grid on the map
+        # debugging find frontiers
+        # self.grid.findFrontiers()
+        self.environment.showGrid(
+            self.grid.getGrid()
+        )  # Display the exploration grid on the map
         self.environment.storeData(data)  # Update the map with the sensor data
 
     def draw(self, surface: pygame.Surface):

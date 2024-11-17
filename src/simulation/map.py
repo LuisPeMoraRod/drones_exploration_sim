@@ -1,6 +1,7 @@
 import math
 import pygame
-from constants import COLORS, GRID_CELL_DIMENTIONS
+from constants import COLORS, GRID_CELL_DIMENTIONS, GRID_VALUES
+import numpy as np
 
 
 class Map:
@@ -48,33 +49,35 @@ class Map:
         for point in self.pointsCloud:
             self.resultMap.set_at(point, COLORS["RED"])
 
-    def showGrid(self, grid: list) -> None:
+    def showGrid(self, grid: np.array) -> None:
         """
         Display the grid on the map.
 
         The grid is a 2D list containing the value of every cell.
-        If the value is 0, the cell is unknown and the color is gray.
-        If the value is 1, the cell is free and the color is white.
-        If the value is 2, the cell is an obstacle and the color is black.
-        If the value is 3, the cell is a frontier and the color is green.
-        If the value is 4, the cell is the goal and the color is blue.
+        If the value of the cell is UNKNOWN, the color is gray.
+        If the value of the cell is FREE, the color is white.
+        If the value of the cell is OBSTACLE, the color is black.
+        If the value of the cell is FRONTIER, the color is blue.
+        If the value of the cell is GOAL, the color is green.
 
         The position of the grid cell is the top left corner of the cell which is a 5 x 5 square.
         """
-        for i in range(len(grid)):
-            for j in range(len(grid[i])):
-                x = j * GRID_CELL_DIMENTIONS[0]
-                y = i * GRID_CELL_DIMENTIONS[1]
-                cell = grid[i][j]
-                if cell == 0:
+        for i in range(grid.shape[0]):
+            for j in range(grid.shape[1]):
+                x = i * GRID_CELL_DIMENTIONS[0]
+                y = j * GRID_CELL_DIMENTIONS[1]
+
+                cell = grid[i, j]
+
+                if cell == GRID_VALUES["UNKNOWN"]:
                     color = COLORS["GRAY"]
-                elif cell == 1:
+                elif cell == GRID_VALUES["FREE"]:
                     color = COLORS["WHITE"]
-                elif cell == 2:
+                elif cell == GRID_VALUES["OBSTACLE"]:
                     color = COLORS["BLACK"]
-                elif cell == 3:
+                elif cell == GRID_VALUES["FRONTIER"]:
                     color = COLORS["BLUE"]
-                elif cell == 4:
+                elif cell == GRID_VALUES["GOAL"]:
                     color = COLORS["RED"]
                 pygame.draw.rect(
                     self.resultMap,

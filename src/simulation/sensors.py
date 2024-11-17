@@ -13,7 +13,7 @@ class LaserSensor:
         speed: int,
         x: int,
         y: int,
-        grid: list,
+        grid: np.array,
         direction: int = DIRECTIONS["RIGHT"],
     ) -> None:
         self.range = range
@@ -77,9 +77,9 @@ class LaserSensor:
         """
         Update the value of the cell in the grid.
         """
-        i = y // 5
-        j = x // 5
-        self.grid[i][j] = value
+        i = x // 5
+        j = y // 5
+        self.grid[i, j] = value
 
     def euclideanDistance(self, obstaclePosition: tuple) -> float:
         """

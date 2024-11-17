@@ -37,11 +37,11 @@ INIT_Y = 11
 
 # Grid cell values
 GRID_VALUES: dict = {
-    "UNKNOWN": 0,
-    "FREE": 1,
-    "OBSTACLE": 2,
-    "FRONTIER": 3,
-    "GOAL": 4,
+    "UNKNOWN": -1,
+    "FREE": 0,
+    "OBSTACLE": 1,
+    "FRONTIER": 2,
+    "GOAL": 3,
 }
 
 GRID_CELL_DIMENTIONS: tuple = (5, 5)
