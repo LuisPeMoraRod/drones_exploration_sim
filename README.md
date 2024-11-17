@@ -1,4 +1,4 @@
-# Drones exploration - simulation
+# Multiple agent frontier based exploration - simulation
 
 ### How to run the project:
 
