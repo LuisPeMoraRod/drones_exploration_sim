@@ -1,7 +1,7 @@
 import pygame
 from math import pi, cos, sin, sqrt
 import numpy as np
-from constants import COLORS, DIRECTIONS, GRID_VALUES, RAYS_AMOUNT
+from constants import COLORS, DIRECTIONS, GRID_VALUES, RAYS_AMOUNT, GRID_CELL_DIMENTIONS
 
 
 class LaserSensor:
@@ -77,8 +77,8 @@ class LaserSensor:
         """
         Update the value of the cell in the grid.
         """
-        i = x // 5
-        j = y // 5
+        i = x // GRID_CELL_DIMENTIONS[0]
+        j = y // GRID_CELL_DIMENTIONS[1]
         self.grid[i, j] = value
 
     def euclideanDistance(self, obstaclePosition: tuple) -> float:

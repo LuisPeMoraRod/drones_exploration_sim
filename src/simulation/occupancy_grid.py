@@ -47,9 +47,9 @@ class OccupancyGrid:
         At the beginning, all cells will be unknown. The robot will update the cells as it explores the map.
         """
         grid = []
-        for i in range(0, map.get_height(), GRID_CELL_DIMENTIONS[1]):
+        for i in range(0, map.get_width(), GRID_CELL_DIMENTIONS[0]):
             row = []
-            for j in range(0, map.get_width(), GRID_CELL_DIMENTIONS[0]):
+            for j in range(0, map.get_height(), GRID_CELL_DIMENTIONS[1]):
                 row.append(GRID_VALUES["UNKNOWN"])
             grid.append(row)
         return np.array(grid)
@@ -67,13 +67,44 @@ class OccupancyGrid:
         # add current position to flood fill and set as reached
         flood_fill = deque()
         flood_fill.append(startGrid)
+        # set of reached cells by outer BFS
         reached = set()
         reached.add(startGrid)
 
+        # Queue to store frontiers
+        frontiers_queue = deque()
+        # set to store visited frontiers
+        visited_frontier = set()
+
         while flood_fill:
             current = flood_fill.popleft()  # get the first element of the queue
-            if self.isFrontier(current):  # handle frontier cell
+            if (
+                self.isFrontier(current) and current not in visited_frontier
+            ):  # handle frontier cell that has not been visited
+
+                #         frontier_group = []
+                #         cell_queue = deque()
+                #         cell_queue.append(current)
+                #         visited_frontier.add(current)
+
                 self.grid[current[0], current[1]] = GRID_VALUES["FRONTIER"]
+
+            #         while cell_queue:
+            #             current_frontier_cell = cell_queue.popleft()
+            #             frontier_group.append(current_frontier_cell)
+            #             for neighbor in self.getNeighbors(current_frontier_cell):
+            #                 if (
+            #                     self.grid[neighbor[0], neighbor[1]]
+            #                     == GRID_VALUES["UNKNOWN"]
+            #                     and neighbor not in visited_frontier
+            #                 ):
+            #                     cell_queue.append(neighbor)
+            #                     visited_frontier.add(neighbor)
+
+            #         frontiers_queue.append(
+            #             frontier_group
+            #         )  # add the discovered frontier group to the queue
+
             for neighbor in self.getNeighbors(current):
                 if neighbor not in reached:
                     if (
