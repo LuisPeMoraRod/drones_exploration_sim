@@ -4,6 +4,7 @@ from collections import deque
 from map import Map
 import numpy as np
 from scipy.ndimage import convolve
+from frontier import Frontier
 
 
 class OccupancyGrid:
@@ -54,9 +55,9 @@ class OccupancyGrid:
             grid.append(row)
         return np.array(grid)
 
-    def breadthFirstSearch(self, start: list) -> None:
+    def occupancyGridBFS(self, start: list) -> None:
         """
-        Performs a BFS to explore the ocuppancy grid and find the frontiers
+        Performs a BFS to explore the ocuppancy grid and set the frontier cells
         """
         # adapt robot position to grid position
         startGrid = (
@@ -71,39 +72,11 @@ class OccupancyGrid:
         reached = set()
         reached.add(startGrid)
 
-        # Queue to store frontiers
-        frontiers_queue = deque()
-        # set to store visited frontiers
-        visited_frontier = set()
-
         while flood_fill:
             current = flood_fill.popleft()  # get the first element of the queue
-            if (
-                self.isFrontier(current) and current not in visited_frontier
-            ):  # handle frontier cell that has not been visited
 
-                #         frontier_group = []
-                #         cell_queue = deque()
-                #         cell_queue.append(current)
-                #         visited_frontier.add(current)
-
+            if self.isFrontier(current):
                 self.grid[current[0], current[1]] = GRID_VALUES["FRONTIER"]
-
-            #         while cell_queue:
-            #             current_frontier_cell = cell_queue.popleft()
-            #             frontier_group.append(current_frontier_cell)
-            #             for neighbor in self.getNeighbors(current_frontier_cell):
-            #                 if (
-            #                     self.grid[neighbor[0], neighbor[1]]
-            #                     == GRID_VALUES["UNKNOWN"]
-            #                     and neighbor not in visited_frontier
-            #                 ):
-            #                     cell_queue.append(neighbor)
-            #                     visited_frontier.add(neighbor)
-
-            #         frontiers_queue.append(
-            #             frontier_group
-            #         )  # add the discovered frontier group to the queue
 
             for neighbor in self.getNeighbors(current):
                 if neighbor not in reached:
@@ -112,6 +85,68 @@ class OccupancyGrid:
                     ):  # only add free cells to the queue
                         reached.add(neighbor)
                         flood_fill.append(neighbor)
+
+    def frontierBFS(self, start: list) -> deque:
+        """
+        Performs a BFS to explore the ocuppancy grid and group the frontier cells
+        """
+        # adapt robot position to grid position
+        startGrid = (
+            start[0] // GRID_CELL_DIMENTIONS[0],
+            start[1] // GRID_CELL_DIMENTIONS[1],
+        )
+
+        # add current position to flood fill and set as reached
+        flood_fill = deque()
+        flood_fill.append(startGrid)
+        # set of reached cells by outer BFS
+        reached = set()
+        reached.add(startGrid)
+
+        # List to store frontiers
+        frontiers = []
+        # set to store visited frontiers
+        visited_frontier = set()
+
+        while flood_fill:
+            current = flood_fill.popleft()  # get the first element of the queue
+            if (
+                self.grid[current[0], current[1]] == GRID_VALUES["FRONTIER"]
+                and current not in visited_frontier
+            ):  # handle frontier cell that has not been visited
+
+                frontier_group = []
+                cell_queue = deque()
+                cell_queue.append(current)
+                visited_frontier.add(current)
+
+                while cell_queue:
+                    current_frontier_cell = cell_queue.popleft()
+                    frontier_group.append(current_frontier_cell)
+                    for neighbor in self.getNeighbors(current_frontier_cell):
+                        if (
+                            self.grid[neighbor[0], neighbor[1]]
+                            == GRID_VALUES["FRONTIER"]
+                            and neighbor not in visited_frontier
+                        ):
+                            cell_queue.append(neighbor)
+                            visited_frontier.add(neighbor)
+
+                frontiers.append(
+                    frontier_group
+                )  # add the discovered frontier group to the queue
+
+            for neighbor in self.getNeighbors(current):
+                if neighbor not in reached:
+                    if (
+                        self.grid[neighbor[0], neighbor[1]] == GRID_VALUES["FREE"]
+                        or self.grid[neighbor[0], neighbor[1]]
+                        == GRID_VALUES["FRONTIER"]
+                    ):  # only add free cells to the queue
+                        reached.add(neighbor)
+                        flood_fill.append(neighbor)
+
+        return frontiers
 
     def getNeighbors(self, cell: tuple) -> list:
         """
@@ -137,9 +172,10 @@ class OccupancyGrid:
         """
         Check if a cell is a frontier
         """
-        for neighbor in self.getNeighbors(cell):
-            if self.grid[neighbor[0], neighbor[1]] == GRID_VALUES["UNKNOWN"]:
-                return True
+        if self.grid[cell[0], cell[1]] == GRID_VALUES["FREE"]:
+            for neighbor in self.getNeighbors(cell):
+                if self.grid[neighbor[0], neighbor[1]] == GRID_VALUES["UNKNOWN"]:
+                    return True
         return False
 
     def findFrontiers(self) -> None:
@@ -167,6 +203,3 @@ class OccupancyGrid:
         frontiers = unknown_cells & (adjacent_free > 0)
 
         return frontiers
-
-    def frontierBFS(self):
-        pass

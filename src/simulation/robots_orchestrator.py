@@ -19,9 +19,9 @@ class RobotsOrchestrator:
         Create robots instances based on configuration file data
         """
         colors = [
+            COLORS["YELLOW"],
             COLORS["WHITE"],
             COLORS["BLUE"],
-            COLORS["YELLOW"],
             COLORS["GREEN"],
         ]
         config_data = config_file_data()

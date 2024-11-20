@@ -70,9 +70,9 @@ class Robot:
         self.laser.position = self.position
         data = self.laser.sense()
         self.grid.setGrid(self.laser.grid)
-        self.grid.breadthFirstSearch(self.position)  # find the frontiers
+        self.grid.occupancyGridBFS(self.position)  # find the frontiers
         # debugging find frontiers
-        # self.grid.findFrontiers()
+        self.grid.frontierBFS(self.position)
         self.environment.showGrid(
             self.grid.getGrid()
         )  # Display the exploration grid on the map
